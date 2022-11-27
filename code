@@ -1,0 +1,137 @@
+import numpy as np
+import matplotlib.pyplot as plt
+#Q1.2
+def p(y):                                                     
+    return (1/(2* (np.pi) ** (1/2))) * np.exp(-(y**2)/4)       #p(y)
+
+p(9)  # value of p(y=9)
+
+def condp(y,x):
+    return (1/(2 * np.pi) ** (1/2)) * np.exp(-1/2 * (y-x) ** 2)     #p(y|x)
+
+def MC(N):
+    sum = 0
+    for i in range(N):        
+        x = np.random.normal(0,1)    # sample from normal(0,1)
+        sum += condp(9,x)            # calculate MC estimate         
+    return sum/N
+
+xx= np.array((10,100,1000,10000,100000))
+mc = [MC(N) for N in xx]
+RAE1 = np.abs(mc-p(9))/p(9)      #calculate RAE
+plt.plot(xx,RAE1)
+plt.xlabel('N')
+plt.ylabel('RAE')
+plt.show()
+
+
+#Q1.3
+def pp(x):
+    return (1/(2 * np.pi) ** (1/2)) * np.exp(-(x)**2/2)    #p(x)
+
+def q(x):
+    return (1/(2 * np.pi) ** (1/2)) * np.exp(-(x-6)**2/2)   #q(x)
+
+def IS(N):
+    sum = 0
+    for i in range(N):        
+        x = np.random.normal(6,1)       # sample from q(x)
+        sum += condp(9,x) * pp(x)/q(x)            # calculate IS estimate
+    return sum/N
+
+xx= np.array((10,100,1000,10000,100000))
+Is = [IS(N) for N in xx]
+RAE2 = np.abs(Is-p(9))/p(9)                #calculate RAE
+plt.plot(xx,RAE2)
+plt.xlabel('N')
+plt.ylabel('RAE')
+plt.show()
+
+
+
+#Q1.4
+xx= np.array((10,100,1000,10000,100000))
+plt.plot(xx,RAE1,'r')
+plt.plot(xx,RAE2,'g')
+plt.xlabel('N')
+plt.ylabel('RAE')
+plt.show()
+
+
+
+#Q2.1
+s = [-1,2,5]
+y = [4.44,2.51,0.73]
+
+x_true = 4
+
+def p(x):
+    return (1/(10 * (2 * np.pi) ** (1/2))) * np.exp(-(x) ** 2 / 200 )            #p(x)
+
+def pp(x,y,σp,s,σy):
+    return ( 1 / (σy * (2 * np.pi) ** (1/2))) * np.exp(-((y - np.abs(x - s)) ** 2) / (2 * σy ** 2))     #p(yi|x,si)
+    
+def r(x,k,y,σp,s,σy):
+    return (p(k) * pp(k,y[0],σp,s[0],σy) * pp(k,y[1],σp,s[1],σy) * pp(k,y[2],σp,s[2],σy) ) \
+            / (p(x) * pp(x,y[0],σp,s[0],σy) * pp(x,y[1],σp,s[1],σy) * pp(x,y[2],σp,s[2],σy))            #accept rate
+
+σy = 1
+σp = 0.1
+x = [10]
+for i in range(100000):
+    k = np.random.normal(x[i],σp)        #random walk
+    u = np.random.uniform()              #uniform
+    if u <= r(x[i],k,y,σp,s,σy) and u <= 1:          #accpet condition
+        x.append(k)
+    else:
+        x.append(x[i])
+
+plt.clf ()
+plt.axvline(x_true , color='k', label='true value', linewidth=2)
+plt.hist(x[200:], bins=50 , density=True , label='posterior            
+alpha=0.5, color=[0.8, 0, 0])                              #set burnin period 
+plt.legend()
+plt.show ()
+
+
+
+
+#Q2.2
+σy = 1
+σp = 0.01
+x = [10]
+for i in range(100000):
+    k = np.random.normal(x[i],σp)        #random walk
+    u = np.random.uniform()              #uniform
+    if u <= r(x[i],k,y,σp,s,σy) and u <= 1:       #accpet condition
+        x.append(k)
+    else:
+        x.append(x[i])
+
+plt.clf ()
+plt.axvline(x_true , color='k', label='true value', linewidth=2)
+plt.hist(x[20000:], bins=50 , density=True , label='posterior',
+alpha=0.5, color=[0.8, 0, 0])          #set burnin period
+plt.legend()
+plt.show ()
+
+
+#Q2.3
+y=[5.01,1.97,1.02]
+σy = 0.1
+σp = 0.1
+x = [10]
+for i in range(100000):
+    k = np.random.normal(x[i],σp)
+    u = np.random.uniform()
+    if u <= r(x[i],k,y,σp,s,σy) and u <= 1:
+        x.append(k)
+    else:
+        x.append(x[i])
+
+plt.clf ()
+plt.axvline(x_true , color='k', label='true value', linewidth=2)
+plt.hist(x, bins=50 , density=True , label='posterior',
+alpha=0.5, color=[0.8, 0, 0])
+plt.legend()
+plt.show ()
