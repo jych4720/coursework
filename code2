@@ -1,0 +1,86 @@
+#Q1
+import numpy as np
+import matplotlib .pyplot as plt
+w = [0.2993,0.7007]
+A1 = np.matrix('0.4,-0.3733 ; 0.06,0.6')
+A2 = np.matrix('-0.8,-0.1867 ; 0.1371,0.8')
+b1 = np.transpose([0.3533,0.0])
+b2 = np.transpose([1.1,0.1])
+def f(x,n):
+    if n == 1:
+        return A1@x + b1
+    else:
+        return A2@x + b2
+    
+x1 = [0]
+x2 = [0]
+x0 = [0,0]
+k = 10000
+
+for i in range(k):           #simulating
+    rd = np.random.choice([1,2], p=w)
+    x1.append(f(x0,rd)[0,0])
+    x2.append(f(x0,rd)[0,1])
+    x0 = [f(x0,rd)[0,0],f(x0,rd)[0,1]]
+    
+plt.scatter(x1[20:k], x2[20:k], s=0.1, color = [0.8, 0, 0])
+plt.gca ().spines['top']. set_visible (False)
+plt.gca ().spines['right']. set_visible (False)
+plt.gca ().spines['bottom']. set_visible (False)
+plt.gca ().spines['left']. set_visible (False)
+plt.gca (). set_xticks ([])
+plt.gca (). set_yticks ([])
+plt.gca ().set_xlim(0, 1.05)
+plt.gca ().set_ylim(0, 1)
+plt.show ()
+
+
+
+
+#Q2
+x = [1]
+y = []
+for i in range(100):         #simulating
+    x.append(np.random.normal(0.9 * x[i],0.01))
+    y.append(np.random.normal(x[i],0.1))
+    
+plt.plot(x,'r')
+plt.plot(y,'b')
+plt.show()
+
+
+
+
+#Q3
+x = [1000]
+y = []
+for i in range(500):           #simulating
+    xx = np.random.normal(np.log(x[i]),0.1)
+    x.append(np.exp(xx))
+    y.append(np.random.normal(0,(x[i])))
+plt.plot(x)
+plt.show()
+plt.plot(y,'r')
+plt.show()
+
+x = [10000]
+y = []
+for i in range(1000):          #simulating
+    xx = np.random.normal(np.log(0.99*x[i]),0)
+    x.append(np.exp(xx))
+    y.append(np.random.normal(0,(x[i])))
+plt.plot(x)
+plt.show()
+plt.plot(y,'r')
+plt.show()
+
+x = [10000]
+y = []
+for i in range(1000):             #simulating
+    xx = np.random.normal(np.log(1.01*x[i]),0)
+    x.append(np.exp(xx))
+    y.append(np.random.normal(0,(x[i])))
+plt.plot(x)
+plt.show()
+plt.plot(y,'r')
+plt.show()
